@@ -1,7 +1,7 @@
 /*
  * main.cpp
  *
- *  Created on: 30 июля 2013 г.
+ *  Created on: 30 РёСЋР»СЏ 2013 Рі.
  *      Author: Kosmonavt
  */
 #include <Arduino.h>
@@ -19,18 +19,18 @@
 #include "main.h"
 
 //#define SCALE_TIMER 10
-#define SEC 1000 // 1 мс (период таймера) * 1000 (коэффициент) = 1 сек
+#define SEC 1000 // 1 РјСЃ (РїРµСЂРёРѕРґ С‚Р°Р№РјРµСЂР°) * 1000 (РєРѕСЌС„С„РёС†РёРµРЅС‚) = 1 СЃРµРє
 #define TIME_DEBUG_OUT 2
-//#define CHAIN_ALL 32 // число импульсов "пробега" всей цепи
+//#define CHAIN_ALL 32 // С‡РёСЃР»Рѕ РёРјРїСѓР»СЊСЃРѕРІ "РїСЂРѕР±РµРіР°" РІСЃРµР№ С†РµРїРё
 #define TIME_SP 2*SEC
 #define TIME_MEASURE_VOLTAGE 1*SEC
 #define TIME_READ_ADT75 1*SEC
-#define TIME_WAIT_USER 30*SEC // ждем действий пользователя 30 сек после вкл зажигания
+#define TIME_WAIT_USER 30*SEC // Р¶РґРµРј РґРµР№СЃС‚РІРёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ 30 СЃРµРє РїРѕСЃР»Рµ РІРєР» Р·Р°Р¶РёРіР°РЅРёСЏ
 #define TIME_ZUMMER 1*SEC
-#define TIME_OUT_DATA 100 // вывод данных неперерывно каждые 100 мсек
+#define TIME_OUT_DATA 100 // РІС‹РІРѕРґ РґР°РЅРЅС‹С… РЅРµРїРµСЂРµСЂС‹РІРЅРѕ РєР°Р¶РґС‹Рµ 100 РјСЃРµРє
 
 
-#define K_VOLT 0.14//0.18//0.14              // коэфициент делителя (для измерения напряжения сети) (0.14 R1 = 13k, R2 = )
+#define K_VOLT 0.14//0.18//0.14              // РєРѕСЌС„РёС†РёРµРЅС‚ РґРµР»РёС‚РµР»СЏ (РґР»СЏ РёР·РјРµСЂРµРЅРёСЏ РЅР°РїСЂСЏР¶РµРЅРёСЏ СЃРµС‚Рё) (0.14 R1 = 13k, R2 = )
 #define V_MAX 5
 
 
@@ -50,7 +50,7 @@ uint8_t prevCamShift = 255;
 uint8_t nCamShift;
 
 unsigned long sp;
-//unsigned long prevSP = 0;
+
 unsigned int tSP = TIME_SP;
 unsigned long duration, durationPrev;
 uint16_t nOnWheel = 0;
@@ -69,14 +69,14 @@ boolean fMeasureVoltage = true;
 uint16_t tMeasureVoltage = TIME_MEASURE_VOLTAGE;
 boolean fReadADT75 = true;
 uint16_t tReadADT75 = TIME_READ_ADT75;
-boolean fValve = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: true - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ; false - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-boolean fOutDebug = true; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-boolean fCalcTime = true; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-boolean fParamTrue = false; // 0 - пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ. пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ; 1 - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ. пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+boolean fValve = false; 
+boolean fOutDebug = true;
+boolean fCalcTime = true;
+boolean fParamTrue = false;
 //boolean fRedrawDisp = true;
 boolean fZummerOn = false;
-boolean fOnPump = false; // Флаг: клапан включен N обротов цепи
-unsigned char fOutData = false; // Extern: вывод параметров (устанавливается каждые n мсек)
+boolean fOnPump = false; // Р¤Р»Р°Рі: РєР»Р°РїР°РЅ РІРєР»СЋС‡РµРЅ N РѕР±СЂРѕС‚РѕРІ С†РµРїРё
+unsigned char fOutData = false; // Extern: РІС‹РІРѕРґ РїР°СЂР°РјРµС‚СЂРѕРІ (СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РєР°Р¶РґС‹Рµ n РјСЃРµРє)
 uint8_t tOutData = TIME_OUT_DATA;
 
 
@@ -95,10 +95,10 @@ boolean ReadADT75() {
 		Wire.write(0);
 		Wire.endTransmission();
 
-		Wire.requestFrom(ADT75, 2); // Читаем 2 байта
+		Wire.requestFrom(ADT75, 2); // Р§РёС‚Р°РµРј 2 Р±Р°Р№С‚Р°
 		if (Wire.available()){
-			a = Wire.read(); // старший байт MSB
-			b = Wire.read(); // младший байт LSB
+			a = Wire.read(); // СЃС‚Р°СЂС€РёР№ Р±Р°Р№С‚ MSB
+			b = Wire.read(); // РјР»Р°РґС€РёР№ Р±Р°Р№С‚ LSB
 			regdata = ((uint16_t)(a << 8) | b) >> 4;
 			temperature = ((int)regdata/16);
 			Scottoiler::instance()->SetTemperature(temperature);
@@ -109,7 +109,7 @@ boolean ReadADT75() {
 }
 
 void SensorSpeed() {
-	sp++; // считаем импульсы с датчика скорости
+	sp++; // СЃС‡РёС‚Р°РµРј РёРјРїСѓР»СЊСЃС‹ СЃ РґР°С‚С‡РёРєР° СЃРєРѕСЂРѕСЃС‚Рё
 }
 
 void SensorVolt() {
@@ -126,11 +126,11 @@ void SensorVolt() {
 
 void TimerInterrupt() {
 
-	if (fValve && ((state == AUTOMATIC) || (state == TIME))) // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	if (fValve && ((state == AUTOMATIC) || (state == TIME)))
 	{
 		if (!tOnSec--) {
-			fValve = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-			fCalcTime = true; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			fValve = false;
+			fCalcTime = true;
 		}
 	}
 
@@ -161,7 +161,7 @@ void TimerInterrupt() {
 		tOutDebug = TIME_DEBUG_OUT;
 		fOutDebug = true;
 	}
-	if (!fMainProg) // работает shell
+	if (!fMainProg) // СЂР°Р±РѕС‚Р°РµС‚ shell
 	{
 		if (!fCmdShell) //
 		{
@@ -185,7 +185,7 @@ void eScottoiler() {
 
 	switch (state) {
 	case AUTOMATIC:
-		if (!fCalcTime && sp / Scottoiler::instance()->GetChainImp() >= 1) { // проверяем есть ли оборот цепи
+		if (!fCalcTime && sp / Scottoiler::instance()->GetChainImp() >= 1) { // РїСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё РѕР±РѕСЂРѕС‚ С†РµРїРё
 			Scottoiler::instance()->Update(fOnPump);
 			cli();
 			sp = 0;
@@ -201,7 +201,7 @@ void eScottoiler() {
 			}
 
 		}
-		// ВЫКЛЮЧЕНИЕ КЛАПАНА ПО ВРЕМЕНИ
+		// Р’Р«РљР›Р®Р§Р•РќРР• РљР›РђРџРђРќРђ РџРћ Р’Р Р•РњР•РќР
 		if (fCalcTime) {
 			cli();
 			sp = 0;
@@ -213,7 +213,7 @@ void eScottoiler() {
 			//digitalWrite(ZUMMER, HIGH);
 			sbi(ZUMMER_PORT, ZUMMER_PIN);
 		}
-		// ВЫКЛЮЧЕНИЕ КЛАПАНА ПО ПРОБЕГУ
+		// Р’Р«РљР›Р®Р§Р•РќРР• РљР›РђРџРђРќРђ РџРћ РџР РћР‘Р•Р“РЈ
 		if (fOnPump && !Scottoiler::instance()->getNOnWheel()) {//fOnPump //Scottoiler::instance()->GetState()
 				//&& (nOnWheel >= Scottoiler::instance()->GetOnWheel())) {//((sp / Scottoiler::instance()->GetChainImp()) >= Scottoiler::instance()->GetOnWheel())) {
 						//>= PercentToInt(Scottoiler::instance()->GetOnWheel(), Scottoiler::instance()->GetAllWheel()))) {
@@ -223,7 +223,7 @@ void eScottoiler() {
 			Scottoiler::instance()->SetMode(0);
 			sbi(ZUMMER_PORT, ZUMMER_PIN);
 		}
-		// ВКЛЮЧЕНИЕ КЛАПАНА
+		// Р’РљР›Р®Р§Р•РќРР• РљР›РђРџРђРќРђ
 		if (!fOnPump && !Scottoiler::instance()->getNOffWheel()) {//!fOnPump//(!Scottoiler::instance()->GetState())
 				//&& ((sp / Scottoiler::instance()->GetChainImp()) >= Scottoiler::instance()->GetOffWheel())) {
 						//>= PercentToInt(Scottoiler::instance()->GetOffWheel(),
@@ -242,10 +242,10 @@ void eScottoiler() {
 	case OFF:
 		Scottoiler::instance()->Off();
 		fValve = false;
-		//digitalWrite(ZUMMER, HIGH);
+		
 		sbi(ZUMMER_PORT, ZUMMER_PIN);
 		break;
-		//return;
+		
 	case TIME:
 		if (!(Scottoiler::instance()->GetState()) && (tOnPumpSec == 0)) {
 			noInterrupts();
@@ -253,17 +253,17 @@ void eScottoiler() {
 			tOnSec = Scottoiler::instance()->GetOnSec();
 			interrupts();
 			Scottoiler::instance()->On();
-			//digitalWrite(ZUMMER, LOW);
+			
 			cbi(ZUMMER_PORT, ZUMMER_PIN);
 			fValve = true;
 		}
-		// ВЫКЛЮЧЕНИЕ КЛАПАНА ПО ВРЕМЕНИ
+		// Р’Р«РљР›Р®Р§Р•РќРР• РљР›РђРџРђРќРђ РџРћ Р’Р Р•РњР•РќР
 		if (fCalcTime) {
 			Scottoiler::instance()->Off();
 			//Scott.Update(temp, hum);
 			fCalcTime = false;
 			fValve = false;
-			//digitalWrite(ZUMMER, HIGH);
+			
 			sbi(ZUMMER_PORT, ZUMMER_PIN);
 		}
 		break;
@@ -282,16 +282,16 @@ void SaveParams()
 		nWrite = EEPROM.read(0);
 		nWrite++;
 		EEPROM.write(0, nWrite);
-		tOnSec = Scottoiler::instance()->GetOnSec();  // время включенного состояния насоса в мс
+		tOnSec = Scottoiler::instance()->GetOnSec();  // РІСЂРµРјСЏ РІРєР»СЋС‡РµРЅРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ РЅР°СЃРѕСЃР° РІ РјСЃ
 		EEPROM.write(2, tOnSec>>8);
 		EEPROM.write(1, tOnSec);
-		EEPROM.write(3, Scottoiler::instance()->getOnWheel()); // число оборотов когда насос работает
+		EEPROM.write(3, Scottoiler::instance()->getOnWheel()); // С‡РёСЃР»Рѕ РѕР±РѕСЂРѕС‚РѕРІ РєРѕРіРґР° РЅР°СЃРѕСЃ СЂР°Р±РѕС‚Р°РµС‚
 
-		AllWheel = Scottoiler::instance()->getOffWheel(); // период включения насоса
+		AllWheel = Scottoiler::instance()->getOffWheel(); // РїРµСЂРёРѕРґ РІРєР»СЋС‡РµРЅРёСЏ РЅР°СЃРѕСЃР°
 		//uint8_t *x = (uint8_t *)&AllWheel;
 		EEPROM.write(5, AllWheel>>8);
 		EEPROM.write(4, AllWheel);
-		EEPROM.write(6, state); // сохраняем состояние системы
+		EEPROM.write(6, state); // СЃРѕС…СЂР°РЅСЏРµРј СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРёСЃС‚РµРјС‹
 		EEPROM.write(7, Scottoiler::instance()->GetChainImp());
 		EEPROM.write(8, Scottoiler::instance()->GetPumpPeriod());
 
@@ -303,7 +303,7 @@ void SaveParams()
 
 void ReadParams()
 {
-	// ЧИТАЕМ НАСТРОЙКИ
+	// Р§РРўРђР•Рњ РќРђРЎРўР РћР™РљР
 	uint16_t xx[] = {EEPROM.read(1), EEPROM.read(2)};
 	Scottoiler::instance()->SetOnSec((xx[1]<<8)|xx[0]);
 
@@ -327,19 +327,13 @@ void Beep(unsigned int ms)
 
 void setup()
 {
-	//noInterrupts();
 	cli();
-	//pinMode(SPEED_IN, INPUT);
-	//pinMode(SCOTTOILER, OUTPUT);
-	//pinMode(ZUMMER, OUTPUT);
 	cbi(DDR(&SPEEDIN_PORT), SPEEDIN_PIN);
 	sbi(DDR(&SCOTTOILER_PORT), SCOTTOILER_PIN);
 	sbi(DDR(&ZUMMER_PORT), ZUMMER_PIN);
 
 	cbi(SCOTTOILER_PORT, SCOTTOILER_PIN);
 	sbi(ZUMMER_PORT, ZUMMER_PIN);
-	//digitalWrite(ZUMMER, HIGH);
-	//digitalWrite(SCOTTOILER, LOW); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 	state = AUTOMATIC;
 
@@ -362,12 +356,10 @@ void setup()
 	sei();
 
 	Wire.begin();
-	//digitalWrite(SCL, HIGH);
-	//digitalWrite(SDA, HIGH);
 
 	cmd_process_setup();
-	fMainProg = false; // командный процессор
-	fCmdShell = false; // юзер не активен
+	fMainProg = false; // РєРѕРјР°РЅРґРЅС‹Р№ РїСЂРѕС†РµСЃСЃРѕСЂ
+	fCmdShell = false; // СЋР·РµСЂ РЅРµ Р°РєС‚РёРІРµРЅ
 	delay(500);
 	if (state != OFF) {
 		Beep(100);
@@ -381,8 +373,6 @@ void setup()
 
 void loop()
 {
-	//int a;
-
 	ReadADT75();
 
 	SensorVolt();
